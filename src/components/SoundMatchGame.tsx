@@ -33,12 +33,12 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
   const current = rounds[step];
   const done = step >= rounds.length;
 
-  const sayCue = () => current && speak(current.cue, 0.85);
+  const sayCue = () => current && speak(current.cue, 0.6);
 
   const pick = (opt: string) => {
     if (picked) return;
     setPicked(opt);
-    speak(opt, 0.85);
+    speak(opt, 0.6);
     if (opt === current.correct) setScore((s) => s + 1);
     setTimeout(() => {
       setPicked(null);

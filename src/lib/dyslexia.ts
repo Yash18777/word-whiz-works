@@ -14,6 +14,21 @@ export const TEST_SENTENCES = [
   "Ten green frogs hop on the wet log.",
   "The happy bee buzzed by the pink flower.",
   "We had fun making a snowman in the cold.",
+  // New kid-friendly sentences
+  "Mom baked a warm apple pie for me.",
+  "The little duck swims with its mommy.",
+  "I can ride my bike up the green hill.",
+  "Stars twinkle high above the quiet town.",
+  "The red balloon floated into the cloudy sky.",
+  "Dad reads a funny story before bedtime.",
+  "Six silly seals splashed in the salty sea.",
+  "The kind girl gave bread to the hungry birds.",
+  "A shiny yellow bus took us to the zoo.",
+  "Grandma knits cozy socks with soft pink yarn.",
+  "The brave knight rode a white horse to the castle.",
+  "We picked sweet strawberries from the garden today.",
+  "Tiny ants march in a long line on the path.",
+  "The owl hoots when the moon is bright and round.",
 ];
 
 export type WordStatus = "correct" | "incorrect" | "missing" | "extra";
@@ -97,6 +112,7 @@ export interface RiskAssessment {
   errors: { incorrect: number; missing: number; extra: number };
   feedback: string;
   suggestion: string;
+  recommendedGame?: "match" | "flip" | "sound" | "builder";
 }
 
 export function assessRisk(results: WordResult[]): RiskAssessment {
@@ -122,12 +138,8 @@ export function assessRisk(results: WordResult[]): RiskAssessment {
       "You may have difficulty with phonics or visually similar letters (b/d, p/q, was/saw). A short daily practice can help a lot.";
   }
 
-  const suggestion =
-    level === "Low"
-      ? "Try the Word Match game to keep your skills sharp!"
-      : level === "Medium"
-        ? "Practice the Word Match game — it builds phonics and pattern recognition."
-        : "Start with the Word Match game daily, then try reading the sentence aloud again.";
+  const rec = recommendGame({ incorrect, missing, extra }, accuracy);
+  const suggestion = rec.reason;
 
   return {
     level,
@@ -136,5 +148,51 @@ export function assessRisk(results: WordResult[]): RiskAssessment {
     errors: { incorrect, missing, extra },
     feedback,
     suggestion,
+    recommendedGame: rec.game,
+  };
+}
+
+export type GameId = "match" | "flip" | "sound" | "builder";
+
+export interface GameRecommendation {
+  game: GameId;
+  title: string;
+  reason: string;
+}
+
+// Lightweight on-device "AI" recommender — picks the best game based on the
+// dominant error pattern in the latest reading attempt.
+export function recommendGame(
+  errors: { incorrect: number; missing: number; extra: number },
+  accuracy: number,
+): GameRecommendation {
+  const { incorrect, missing, extra } = errors;
+  const total = incorrect + missing + extra;
+
+  if (total === 0 || accuracy >= 0.95) {
+    return {
+      game: "match",
+      title: "Word Match",
+      reason: "Amazing reading! Try Word Match to keep your sharp eye for tricky look-alike words.",
+    };
+  }
+  if (incorrect >= missing && incorrect >= extra) {
+    return {
+      game: "flip",
+      title: "Letter Flip",
+      reason: "You swapped a few words. Letter Flip trains b/d/p/q and mirror words like was/saw.",
+    };
+  }
+  if (missing >= incorrect && missing >= extra) {
+    return {
+      game: "builder",
+      title: "Word Builder",
+      reason: "You skipped a few words. Word Builder helps you slow down and rebuild words letter by letter.",
+    };
+  }
+  return {
+    game: "sound",
+    title: "Sound Match",
+    reason: "You added extra words. Sound Match trains your ear so you only say what you read.",
   };
 }
