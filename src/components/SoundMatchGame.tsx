@@ -30,10 +30,10 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [muted, setMutedFlag] = useMuted();
 
-  const sayCue = () => speak(current.cue, 0.85);
-
   const current = rounds[step];
   const done = step >= rounds.length;
+
+  const sayCue = () => current && speak(current.cue, 0.85);
 
   const pick = (opt: string) => {
     if (picked) return;
@@ -92,7 +92,7 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
           <div className="mt-8 flex flex-col items-center gap-6">
             <button
               type="button"
-              onClick={() => speak(current.cue)}
+              onClick={sayCue}
               className="flex flex-col items-center gap-3 rounded-3xl px-10 py-6 text-3xl font-extrabold transition-transform hover:scale-105"
               style={{
                 background: "var(--gradient-fun)",
@@ -103,7 +103,17 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
               <Volume2 className="h-7 w-7" />
               {current.cue}
             </button>
-            <p className="text-sm text-muted-foreground">Tap the speaker to hear it again</p>
+            <button
+              type="button"
+              onClick={sayCue}
+              disabled={muted}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted disabled:opacity-50"
+            >
+              <RotateCw className="h-4 w-4" /> Replay sound
+            </button>
+            {muted && (
+              <p className="text-sm text-danger">Sound is muted — turn it on to hear words.</p>
+            )}
 
             <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
               {current.options.map((opt, i) => {
