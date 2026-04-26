@@ -48,6 +48,7 @@ export function SpeechTest() {
   const [error, setError] = useState<string | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const supported = useMemo(() => getRecognitionCtor() !== null, []);
+  const [muted, setMutedFlag] = useMuted();
   const sentence = TEST_SENTENCES[sentenceIndex];
 
   const results: WordResult[] | null = useMemo(
@@ -58,6 +59,15 @@ export function SpeechTest() {
     () => (results ? assessRisk(results) : null),
     [results],
   );
+
+  // Persist each completed attempt for the Improvement Report.
+  useEffect(() => {
+    if (stage === "result" && assessment) {
+      recordAttempt(sentence, assessment);
+    }
+    // We intentionally only record when assessment first becomes available for this stage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assessment, stage]);
 
   useEffect(() => () => recognitionRef.current?.stop(), []);
 
@@ -126,12 +136,10 @@ export function SpeechTest() {
     reset();
   };
 
-  const speakSentence = () => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    const u = new SpeechSynthesisUtterance(sentence);
-    u.rate = 0.9;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
+  const speakSentence = () => speak(sentence, 0.9);
+  const toggleMute = () => {
+    if (!muted) stopSpeaking();
+    setMutedFlag(!muted);
   };
 
   if (stage === "game") {
@@ -145,18 +153,43 @@ export function SpeechTest() {
         className="rounded-3xl border border-border bg-card p-8 md:p-10"
         style={{ boxShadow: "var(--shadow-soft)" }}
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <span className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
             Read this sentence aloud
           </span>
-          <button
-            type="button"
-            onClick={speakSentence}
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-primary hover:bg-muted"
-            aria-label="Listen to the sentence"
-          >
-            <Volume2 className="h-4 w-4" /> Listen
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={speakSentence}
+              disabled={muted}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-primary hover:bg-muted disabled:opacity-50"
+              aria-label="Listen to the sentence"
+              title="Hear it"
+            >
+              <Volume2 className="h-4 w-4" /> Listen
+            </button>
+            <button
+              type="button"
+              onClick={speakSentence}
+              disabled={muted}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-primary hover:bg-muted disabled:opacity-50"
+              aria-label="Replay the sentence"
+              title="Replay"
+            >
+              <RotateCw className="h-4 w-4" /> Replay
+            </button>
+            <button
+              type="button"
+              onClick={toggleMute}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-sm font-semibold text-foreground hover:bg-muted"
+              aria-label={muted ? "Unmute speech" : "Mute speech"}
+              aria-pressed={muted}
+              title={muted ? "Unmute" : "Mute"}
+            >
+              {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              {muted ? "Muted" : "Sound on"}
+            </button>
+          </div>
         </div>
         <p className="text-3xl md:text-4xl font-semibold leading-relaxed text-foreground">
           {sentence}
