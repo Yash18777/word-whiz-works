@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Mic, MicOff, RefreshCw, Sparkles, Volume2 } from "lucide-react";
+import { Mic, MicOff, RefreshCw, RotateCw, Sparkles, Volume2, VolumeX } from "lucide-react";
 import {
   TEST_SENTENCES,
   assessRisk,
@@ -7,6 +7,8 @@ import {
   type RiskAssessment,
   type WordResult,
 } from "@/lib/dyslexia";
+import { speak, stopSpeaking, useMuted } from "@/lib/speech";
+import { recordAttempt } from "@/lib/history";
 import { GamesHub } from "./GamesHub";
 
 // Minimal types for the Web Speech API (not in default lib.dom)
