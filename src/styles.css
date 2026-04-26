@@ -2,6 +2,8 @@
 @source "../src";
 @import "tw-animate-css";
 
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap");
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -62,26 +64,41 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --radius: 1rem;
+  /* Soft cream — never pure white (reduces visual stress) */
+  --background: oklch(97% 0.012 85);
+  --foreground: oklch(28% 0.02 260);
+  --card: oklch(99% 0.008 85);
+  --card-foreground: oklch(28% 0.02 260);
+  --popover: oklch(99% 0.008 85);
+  --popover-foreground: oklch(28% 0.02 260);
+  /* Calm teal primary */
+  --primary: oklch(58% 0.09 200);
+  --primary-foreground: oklch(98% 0.005 85);
+  /* Warm ochre secondary */
+  --secondary: oklch(88% 0.06 78);
+  --secondary-foreground: oklch(30% 0.04 60);
+  --muted: oklch(94% 0.015 85);
+  --muted-foreground: oklch(45% 0.02 260);
+  --accent: oklch(85% 0.08 78);
+  --accent-foreground: oklch(30% 0.04 60);
+  --destructive: oklch(60% 0.18 25);
+  --destructive-foreground: oklch(98% 0.005 85);
+  --border: oklch(88% 0.018 85);
+  --input: oklch(92% 0.015 85);
+  --ring: oklch(58% 0.09 200);
+  /* Semantic risk + feedback tokens */
+  --success: oklch(65% 0.13 150);
+  --success-foreground: oklch(98% 0.005 85);
+  --warning: oklch(75% 0.13 75);
+  --warning-foreground: oklch(28% 0.04 60);
+  --danger: oklch(62% 0.17 28);
+  --danger-foreground: oklch(98% 0.005 85);
+  --highlight-error: oklch(88% 0.12 28);
+  --highlight-missing: oklch(88% 0.11 75);
+  --highlight-correct: oklch(88% 0.11 150);
+  --shadow-soft: 0 10px 30px -10px oklch(58% 0.09 200 / 0.18);
+  --gradient-warm: linear-gradient(135deg, oklch(88% 0.06 78), oklch(94% 0.04 85));
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -132,13 +149,34 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@theme inline {
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --font-sans: "Lexend", ui-sans-serif, system-ui, sans-serif;
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
   }
 
+  html {
+    font-family: "Lexend", ui-sans-serif, system-ui, sans-serif;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    /* Dyslexia-friendly base: generous line-height, slight letter-spacing */
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  p, li {
+    max-width: 65ch;
   }
 }
