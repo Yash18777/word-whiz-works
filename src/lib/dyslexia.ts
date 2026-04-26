@@ -2,11 +2,18 @@
 // All logic is deterministic and runs in the browser.
 
 export const TEST_SENTENCES = [
-  "The quick brown fox jumps over the lazy dog.",
+  "The cat sat on the soft red mat.",
+  "My puppy loves to run in the park.",
+  "The yellow sun is hot and bright.",
+  "I see a big blue fish in the pond.",
   "She sells seashells by the sunny seashore.",
+  "A tiny mouse ate the yummy cheese.",
+  "The quick brown fox jumps over the lazy dog.",
   "Peter Piper picked a peck of pickled peppers.",
   "A big black bug bit a big black bear.",
-  "The bright sun shines on the green grass.",
+  "Ten green frogs hop on the wet log.",
+  "The happy bee buzzed by the pink flower.",
+  "We had fun making a snowman in the cold.",
 ];
 
 export type WordStatus = "correct" | "incorrect" | "missing" | "extra";
