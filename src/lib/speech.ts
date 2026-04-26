@@ -15,11 +15,13 @@ export function setMuted(v: boolean) {
   window.dispatchEvent(new Event("readright:mute-change"));
 }
 
-export function speak(text: string, rate = 0.9) {
+// Default rate is intentionally slow (0.7) so kids hear every sound clearly.
+export function speak(text: string, rate = 0.7) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
   if (isMuted()) return;
   const u = new SpeechSynthesisUtterance(text);
   u.rate = rate;
+  u.pitch = 1.05;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
