@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowLeft, RefreshCw, Volume2 } from "lucide-react";
+import { ArrowLeft, RefreshCw, RotateCw, Volume2, VolumeX } from "lucide-react";
+import { speak, useMuted } from "@/lib/speech";
 
 // Pick the word that starts with the same sound as the cue word.
 const ROUNDS: Array<{ cue: string; correct: string; options: string[] }> = [
@@ -20,14 +21,6 @@ function shuffle<T>(a: T[]): T[] {
     [x[i], x[j]] = [x[j], x[i]];
   }
   return x;
-}
-
-function speak(word: string) {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
-  const u = new SpeechSynthesisUtterance(word);
-  u.rate = 0.85;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
 }
 
 export function SoundMatchGame({ onExit }: { onExit: () => void }) {
