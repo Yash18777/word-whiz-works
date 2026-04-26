@@ -48,6 +48,10 @@ function Index() {
 
       <SpeechTest />
 
+      <div className="mx-auto mt-12 max-w-4xl">
+        <ImprovementReport />
+      </div>
+
       <div className="mx-auto my-16 max-w-4xl">
         <div
           className="rounded-3xl border-2 border-border p-6 md:p-10"
