@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Mic, MicOff, RefreshCw, RotateCw, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { Mic, MicOff, RefreshCw, RotateCw, Sparkles, Volume2, VolumeX, Brain } from "lucide-react";
 import {
   TEST_SENTENCES,
   assessRisk,
@@ -136,14 +136,14 @@ export function SpeechTest() {
     reset();
   };
 
-  const speakSentence = () => speak(sentence, 0.9);
+  const speakSentence = () => speak(sentence, 0.65);
   const toggleMute = () => {
     if (!muted) stopSpeaking();
     setMutedFlag(!muted);
   };
 
   if (stage === "game") {
-    return <GamesHub onExit={() => setStage("result")} />;
+    return <GamesHub onExit={() => setStage("result")} initialGame={assessment?.recommendedGame} />;
   }
 
   return (
@@ -355,9 +355,12 @@ function ResultPanel({
         </div>
         <div className="space-y-4 p-6 md:p-8">
           <p className="text-lg text-foreground">{assessment.feedback}</p>
-          <div className="rounded-2xl bg-muted p-5">
-            <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-              <Sparkles className="h-4 w-4 text-primary" /> Suggested activity
+          <div
+            className="rounded-2xl border-2 p-5"
+            style={{ background: "var(--fun-mint)", borderColor: "var(--primary)" }}
+          >
+            <p className="mb-2 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-foreground">
+              <Brain className="h-4 w-4 text-primary" /> AI Coach recommends
             </p>
             <p className="mb-4 text-foreground">{assessment.suggestion}</p>
             <button
@@ -365,7 +368,7 @@ function ResultPanel({
               onClick={onPlayGame}
               className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
-              🎮 Play Brain Games →
+              🎮 Play recommended game →
             </button>
           </div>
           <p className="text-xs text-muted-foreground">

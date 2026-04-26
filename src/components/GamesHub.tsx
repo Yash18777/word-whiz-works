@@ -46,8 +46,14 @@ const GAMES: GameInfo[] = [
   },
 ];
 
-export function GamesHub({ onExit }: { onExit?: () => void }) {
-  const [active, setActive] = useState<GameId | null>(null);
+export function GamesHub({
+  onExit,
+  initialGame,
+}: {
+  onExit?: () => void;
+  initialGame?: GameId;
+}) {
+  const [active, setActive] = useState<GameId | null>(initialGame ?? null);
 
   if (active === "match") return <WordMatchGame onExit={() => setActive(null)} />;
   if (active === "flip") return <LetterFlipGame onExit={() => setActive(null)} />;
