@@ -28,6 +28,9 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
   const [step, setStep] = useState(0);
   const [score, setScore] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
+  const [muted, setMutedFlag] = useMuted();
+
+  const sayCue = () => speak(current.cue, 0.85);
 
   const current = rounds[step];
   const done = step >= rounds.length;
@@ -35,7 +38,7 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
   const pick = (opt: string) => {
     if (picked) return;
     setPicked(opt);
-    speak(opt);
+    speak(opt, 0.85);
     if (opt === current.correct) setScore((s) => s + 1);
     setTimeout(() => {
       setPicked(null);
@@ -63,11 +66,23 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
         className="rounded-3xl border-2 border-border bg-card p-6 md:p-8"
         style={{ boxShadow: "var(--shadow-pop)" }}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <h2 className="text-2xl font-bold text-foreground">🔊 Sound Match</h2>
-          <span className="rounded-full bg-muted px-3 py-1 text-sm font-semibold text-foreground">
-            ⭐ {score}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMutedFlag(!muted)}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted"
+              aria-label={muted ? "Unmute sound" : "Mute sound"}
+              title={muted ? "Unmute" : "Mute"}
+            >
+              {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              {muted ? "Muted" : "Sound on"}
+            </button>
+            <span className="rounded-full bg-muted px-3 py-1 text-sm font-semibold text-foreground">
+              ⭐ {score}
+            </span>
+          </div>
         </div>
         <p className="mt-1 text-muted-foreground">
           Listen to the word, then pick a word that starts with the SAME sound.
