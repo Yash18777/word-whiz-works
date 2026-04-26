@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowLeft, RefreshCw, Volume2 } from "lucide-react";
+import { ArrowLeft, RefreshCw, RotateCw, Volume2, VolumeX } from "lucide-react";
+import { speak, useMuted } from "@/lib/speech";
 
 // Pick the word that starts with the same sound as the cue word.
 const ROUNDS: Array<{ cue: string; correct: string; options: string[] }> = [
@@ -22,27 +23,22 @@ function shuffle<T>(a: T[]): T[] {
   return x;
 }
 
-function speak(word: string) {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
-  const u = new SpeechSynthesisUtterance(word);
-  u.rate = 0.85;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
-}
-
 export function SoundMatchGame({ onExit }: { onExit: () => void }) {
   const [rounds] = useState(() => shuffle(ROUNDS).slice(0, 5));
   const [step, setStep] = useState(0);
   const [score, setScore] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
+  const [muted, setMutedFlag] = useMuted();
 
   const current = rounds[step];
   const done = step >= rounds.length;
 
+  const sayCue = () => current && speak(current.cue, 0.85);
+
   const pick = (opt: string) => {
     if (picked) return;
     setPicked(opt);
-    speak(opt);
+    speak(opt, 0.85);
     if (opt === current.correct) setScore((s) => s + 1);
     setTimeout(() => {
       setPicked(null);
@@ -70,11 +66,23 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
         className="rounded-3xl border-2 border-border bg-card p-6 md:p-8"
         style={{ boxShadow: "var(--shadow-pop)" }}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <h2 className="text-2xl font-bold text-foreground">🔊 Sound Match</h2>
-          <span className="rounded-full bg-muted px-3 py-1 text-sm font-semibold text-foreground">
-            ⭐ {score}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMutedFlag(!muted)}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted"
+              aria-label={muted ? "Unmute sound" : "Mute sound"}
+              title={muted ? "Unmute" : "Mute"}
+            >
+              {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              {muted ? "Muted" : "Sound on"}
+            </button>
+            <span className="rounded-full bg-muted px-3 py-1 text-sm font-semibold text-foreground">
+              ⭐ {score}
+            </span>
+          </div>
         </div>
         <p className="mt-1 text-muted-foreground">
           Listen to the word, then pick a word that starts with the SAME sound.
@@ -84,7 +92,7 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
           <div className="mt-8 flex flex-col items-center gap-6">
             <button
               type="button"
-              onClick={() => speak(current.cue)}
+              onClick={sayCue}
               className="flex flex-col items-center gap-3 rounded-3xl px-10 py-6 text-3xl font-extrabold transition-transform hover:scale-105"
               style={{
                 background: "var(--gradient-fun)",
@@ -95,7 +103,17 @@ export function SoundMatchGame({ onExit }: { onExit: () => void }) {
               <Volume2 className="h-7 w-7" />
               {current.cue}
             </button>
-            <p className="text-sm text-muted-foreground">Tap the speaker to hear it again</p>
+            <button
+              type="button"
+              onClick={sayCue}
+              disabled={muted}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted disabled:opacity-50"
+            >
+              <RotateCw className="h-4 w-4" /> Replay sound
+            </button>
+            {muted && (
+              <p className="text-sm text-danger">Sound is muted — turn it on to hear words.</p>
+            )}
 
             <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
               {current.options.map((opt, i) => {

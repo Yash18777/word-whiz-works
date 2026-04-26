@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { SpeechTest } from "@/components/SpeechTest";
 import { GamesHub } from "@/components/GamesHub";
+import { ImprovementReport } from "@/components/ImprovementReport";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,6 +47,10 @@ function Index() {
       </header>
 
       <SpeechTest />
+
+      <div className="mx-auto mt-12 max-w-4xl">
+        <ImprovementReport />
+      </div>
 
       <div className="mx-auto my-16 max-w-4xl">
         <div
