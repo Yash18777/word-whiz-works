@@ -1,21 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Brain } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { SpeechTest } from "@/components/SpeechTest";
+import { GamesHub } from "@/components/GamesHub";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ReadRight — Dyslexia Screening for Children" },
+      { title: "ReadRight — Fun Dyslexia Games & Reading Test for Kids" },
       {
         name: "description",
         content:
-          "A gentle, dyslexia-friendly speech screening tool for children. Read a sentence aloud and get instant feedback plus a fun word-match activity.",
+          "A playful, kid-friendly app that screens for dyslexia signs and offers fun brain games — Word Match, Letter Flip, Sound Match, and Word Builder.",
       },
-      { property: "og:title", content: "ReadRight — Dyslexia Screening for Children" },
+      { property: "og:title", content: "ReadRight — Fun Dyslexia Games for Kids" },
       {
         property: "og:description",
         content:
-          "Read a sentence, speak it aloud, and get instant friendly feedback with a practice game.",
+          "Read sentences aloud and play 4 brain games that train phonics, letter recognition and sound matching.",
       },
     ],
   }),
@@ -24,24 +25,40 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="min-h-screen bg-background px-4 py-10 md:py-16">
+    <main
+      className="min-h-screen px-4 py-10 md:py-14"
+      style={{ background: "var(--gradient-sky)" }}
+    >
       <header className="mx-auto mb-10 max-w-3xl text-center md:mb-14">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-medium text-primary border border-border">
-          <Brain className="h-4 w-4" /> Friendly screening · No data leaves your device
+        <div
+          className="mb-5 inline-flex items-center gap-2 rounded-full border-2 border-border px-4 py-1.5 text-sm font-bold text-foreground"
+          style={{ background: "var(--gradient-fun)", color: "var(--primary-foreground)" }}
+        >
+          <Sparkles className="h-4 w-4" /> Fun reading practice for kids
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-          ReadRight
+        <h1 className="text-5xl font-extrabold tracking-tight text-foreground md:text-6xl">
+          Read<span style={{ color: "var(--primary)" }}>Right</span> 🦉
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-          A gentle dyslexia screening for children. Read the sentence aloud, and we’ll show what
-          went well and where to practice.
+          Read a sentence out loud, see how you did, then play 4 colorful brain games that
+          help with letters and sounds!
         </p>
       </header>
 
       <SpeechTest />
 
-      <footer className="mx-auto mt-16 max-w-3xl text-center text-xs text-muted-foreground">
-        ReadRight is an educational screening tool, not a medical diagnosis.
+      <div className="mx-auto my-16 max-w-4xl">
+        <div
+          className="rounded-3xl border-2 border-border p-6 md:p-10"
+          style={{ background: "var(--card)", boxShadow: "var(--shadow-pop)" }}
+        >
+          <GamesHub />
+        </div>
+      </div>
+
+      <footer className="mx-auto mt-10 max-w-3xl text-center text-xs text-muted-foreground">
+        🌈 ReadRight is a fun learning tool, not a medical diagnosis. If you're worried,
+        please talk to a teacher or specialist.
       </footer>
     </main>
   );

@@ -7,7 +7,7 @@ import {
   type RiskAssessment,
   type WordResult,
 } from "@/lib/dyslexia";
-import { WordMatchGame } from "./WordMatchGame";
+import { GamesHub } from "./GamesHub";
 
 // Minimal types for the Web Speech API (not in default lib.dom)
 type SpeechRecognitionResult = { transcript: string };
@@ -133,7 +133,7 @@ export function SpeechTest() {
   };
 
   if (stage === "game") {
-    return <WordMatchGame onExit={() => setStage("result")} />;
+    return <GamesHub onExit={() => setStage("result")} />;
   }
 
   return (
@@ -330,7 +330,7 @@ function ResultPanel({
               onClick={onPlayGame}
               className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
-              Play Word Match →
+              🎮 Play Brain Games →
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
